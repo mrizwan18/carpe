@@ -1,0 +1,22 @@
+# See https://help.github.com/articles/ignoring-files/ for more about ignoring files.
+
+# dependencies
+/carpe-be/node_modules
+/carpe-fe/node_modules
+/.pnp
+.pnp.js
+
+# testing
+/carpe-be/coverage
+/carpe-fe/coverage
+
+# production
+/carpe-fe/build
+/carpe-be/build
+
+# properties
+/properties/
+
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*

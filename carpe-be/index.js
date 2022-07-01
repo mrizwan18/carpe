@@ -9,6 +9,7 @@ app.use(bodyParser.json({ limit: "50mb", extended: true }));
 app.use(bodyParser.urlencoded({ limit: "50mb", extended: true }));
 app.use(cors());
 dotenv.config({ path: "../properties/.env" });
+const poolRoutes = require("./routes/poolRoutes");
 
 const port = process.env.port;
 
@@ -20,3 +21,5 @@ mongoose
   .then(() =>
     app.listen(port, () => console.log(`server running on port: ${port}`))
   );
+
+app.use("/api/pools", poolRoutes);

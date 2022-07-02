@@ -1,14 +1,14 @@
-const express = require("express");
+import express from "express";
 const router = express.Router();
-const {
+import {
   getPools,
   setPool,
   updatePool,
   deletePool,
-} = require("../controllers/poolsController");
+} from "../controllers/poolsController.js";
 
 router.route("/").get(getPools).post(setPool);
 
 router.route("/:id").put(updatePool).delete(deletePool);
 
-module.exports = router;
+export default router;

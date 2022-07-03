@@ -1,4 +1,6 @@
 import Pool from "../models/poolSchema.js";
+import asyncHandler from "express-async-handler";
+
 export const getPools = async (req, res) => {
   let status = 200;
   let status_code = "00";
@@ -21,13 +23,17 @@ export const getPools = async (req, res) => {
   }
 };
 
-export const setPool = async (req, res) => {
+export const setPool = asyncHandler(async (req, res) => {
+  if (!req.body) {
+    res.status(400);
+    throw new Error("Required data missing");
+  }
   let status = 200;
   let status_code = "00";
   let payload = [];
   try {
     const pool = req.body;
-    console.log(pool)
+    console.log(pool);
     const newPool = new Pool(pool);
     await newPool.save();
     payload = newPool;
@@ -42,16 +48,16 @@ export const setPool = async (req, res) => {
       payload: payload,
     });
   }
-};
+});
 
-export const updatePool = (req, res) => {
+export const updatePool = asyncHandler(async (req, res) => {
   res.status(200).json({
     message: `${id} Pool updated`,
   });
-};
+});
 
-export const deletePool = (req, res) => {
+export const deletePool = asyncHandler(async (req, res) => {
   res.status(200).json({
     message: `${id} Pool deleted`,
   });
-};
+});

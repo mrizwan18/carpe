@@ -32,7 +32,7 @@ const verifyUserToken = (req, res, next) => {
   }
 };
 
-router.route("/").get(getPools).post(verifyUserToken, setPool);
+router.route("/").get(getPools).post(setPool);
 router.get("/:id", getPool);
 router.route("/:id").put(updatePool).delete(deletePool);
 router.post("/addTofav", verifyUserToken, addPoolTofav);

@@ -17,5 +17,6 @@ export const isValidPool = (req) => {
 };
 
 export const isValidLength = (obj, len = 0) => {
+  console.log(obj + len);
   return obj && obj.length >= len;
 };

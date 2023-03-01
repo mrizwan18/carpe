@@ -3,51 +3,66 @@ import Fav from "../models/favSchema.js";
 import asyncHandler from "express-async-handler";
 import mongoose from "mongoose";
 import { isValidPool, isValidLength } from "../utils/validatePoolPost.js";
+import dummyData from "../models/dummyData.js";
 
+// Get all pools
 export const getPools = asyncHandler(async (req, res) => {
-  let status = 200;
-  let status_code = "00";
-  let payload = [];
+  let statusCode = 200;
+  let statusMessage = "Success";
+  let pools = [];
+
   try {
-    payload = await Pool.find();
-    if (payload.length <= 0) {
-      status = 404;
+    // pools = await Pool.find();
+    pools = dummyData;
+
+    if (pools.length === 0) {
+      statusCode = 404;
+      statusMessage = "No pools found";
     }
   } catch (error) {
-    status = 500;
-    status_code = "05";
-    payload =
-      process.env.NODE_ENV === "dev" ? error.message : "Something went wrong";
+    statusCode = 500;
+    statusMessage = error.message;
   } finally {
-    res.status(status).json({
-      status: status_code,
-      payload: payload,
+    res.status(statusCode).json({
+      status: statusCode === 200 ? "00" : "05",
+      message: statusMessage,
+      pools: pools,
     });
   }
 });
 
+//get a pool by id
 export const getPool = asyncHandler(async (req, res) => {
   let status = 200;
   let status_code = "00";
-  let payload = [];
+  let pool = [];
+  const { id } = req.params;
+
   try {
-    const { id } = req.params;
     if (!isValidLength(id) || !mongoose.Types.ObjectId.isValid(id)) {
       status = 400;
       status_code = "12";
-      payload = "Invalid pool id provided";
+      pool = "Invalid pool id provided";
+      res.status(status).json({
+        status: status_code,
+        payload: pool,
+      });
     } else {
-      payload = await Pool.findOne({ _id: id });
+      // pool = await Pool.findOne({ _id: id });
+      pool = dummyData[0];
+      res.status(status).json({
+        status: status_code,
+        payload: pool,
+      });
     }
   } catch (error) {
     status = 500;
     status_code = "05";
-    payload =
+    pool =
       process.env.NODE_ENV === "dev" ? error.message : "Something went wrong";
-  } finally {
     res.status(status).json({
       status: status_code,
-      payload: payload,
+      payload: pool,
     });
   }
 });
@@ -64,7 +79,8 @@ export const setPool = asyncHandler(async (req, res) => {
     } else {
       const pool = req.body;
       const newPool = new Pool(pool);
-      await newPool.save();
+      // await newPool.save();
+      dummyData.push(newPool);
       payload = newPool;
     }
   } catch (error) {
@@ -86,13 +102,15 @@ export const updatePool = asyncHandler(async (req, res) => {
   let payload = [];
   try {
     const { id } = req.params;
-    if (!isValidLength(id) || !mongoose.Types.ObjectId.isValid(id)) {
+    const updatedPool = req.body;
+
+    if (!mongoose.Types.ObjectId.isValid(id) || !isValidPool(req)) {
       status = 400;
       status_code = "12";
-      payload = "Invalid pool id provided";
+      payload = "Invalid pool info provided";
     } else {
-      const updatedPool = req.body;
-      await Pool.findByIdAndUpdate(id, updatedPool, { new: true });
+      // await Pool.findByIdAndUpdate(id, updatedPool, { new: true });
+      dummyData[0] = updatedPool;
       payload = updatedPool;
     }
   } catch (error) {
@@ -119,7 +137,8 @@ export const deletePool = asyncHandler(async (req, res) => {
       status_code = "12";
       payload = "Invalid pool id provided";
     } else {
-      await Pool.findByIdAndRemove(id);
+      // await Pool.findByIdAndRemove(id);
+      dummyData.splice(0, 1);
       payload = `Pool with id ${id} deleted`;
     }
   } catch (error) {
@@ -142,9 +161,7 @@ export const addPoolTofav = asyncHandler(async (req, res) => {
   try {
     const { pool_id, owner_id } = req.body;
     if (
-      !isValidLength(pool_id) ||
       !mongoose.Types.ObjectId.isValid(pool_id) ||
-      !isValidLength(owner_id) ||
       !mongoose.Types.ObjectId.isValid(owner_id)
     ) {
       status = 400;

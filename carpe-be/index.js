@@ -16,11 +16,13 @@ dotenv.config({ path: "../properties/.env" });
 
 const port = process.env.port;
 
-mongoose
-  .connect(process.env.CONNECTION_URL)
-  .then(() =>
-    app.listen(port, () => console.log(`server running on port: ${port}`))
-  );
+// mongoose
+//   .connect(process.env.CONNECTION_URL)
+//   .then(() =>
+//     app.listen(port, () => console.log(`server running on port: ${port}`))
+//   );
+
+app.listen(port, () => console.log(`server running on port: ${port}`));
 
 app.use(errorHandler);
 app.use("/api/pools", poolRoutes);

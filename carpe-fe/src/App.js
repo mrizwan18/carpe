@@ -1,11 +1,13 @@
-import React from 'react';
+import React from "react";
+import HomepageHero from "./components/HomepageHero";
+import Navbar from "./components/UI/Navbar";
 
 const App = () => {
-return (
-  <div>
-    <h1>Welcome to Carpe</h1>
-    <h2>Just Carpe Diem</h2>
-  </div>
-);
-}
+  return (
+    <>
+      <Navbar />
+      <HomepageHero />
+    </>
+  );
+};
 export default App;

@@ -11,7 +11,7 @@ function Navbar() {
             <div className="flex-shrink-0 flex items-center">
               <a href="#">
                 <svg
-                  className="h-8 w-8 text-primaryOrange"
+                  className="h-8 w-8 text-primaryOrange-light"
                   viewBox="0 0 24 24"
                   fill="none"
                   xmlns="http://www.w3.org/2000/svg"
@@ -27,7 +27,7 @@ function Navbar() {
             <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
               <a
                 href="#"
-                className="border-primaryOrange text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
+                className="border-primaryOrange-light text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
                 Support
               </a>
@@ -52,23 +52,32 @@ function Navbar() {
             </button>
           </div>
           <div className="hidden sm:ml-6 sm:flex sm:items-center gap-2">
-            <button className="bg-primaryOrange hover:bg-primaryOrange text-white font-semibold py-2 px-4 rounded">
+            <button className="bg-primaryOrange-light hover:bg-primaryOrange-light text-white font-semibold py-2 px-4 rounded">
               Login
             </button>
-            <button className="bg-primaryOrange hover:bg-primaryOrange text-white font-semibold py-2 px-4 rounded">
+            <button className="bg-primaryOrange-light hover:bg-primaryOrange-light text-white font-semibold py-2 px-4 rounded">
               Signup
             </button>
           </div>
         </div>
       </div>
       <div id="menu" className={"sm:hidden " + (isToggle ? "hidden" : null)}>
-        <a href="#" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+        <a
+          href="#"
+          className="block px-4 py-2 text-primaryBg hover:bg-primaryOrange-dark focus:bg-primaryOrange-dark  hover:text-white focus:text-white"
+        >
           Support
         </a>
-        <a href="#" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+        <a
+          href="#"
+          className="block px-4 py-2 text-primaryBg hover:bg-primaryOrange-dark focus:bg-primaryOrange-dark  hover:text-white focus:text-white"
+        >
           Login
         </a>
-        <a href="#" className="block px-4 py-2 text-gray-800 hover:bg-gray-200">
+        <a
+          href="#"
+          className="block px-4 py-2 text-primaryBg hover:bg-primaryOrange-dark focus:bg-primaryOrange-dark hover:text-white focus:text-white"
+        >
           Signup
         </a>
       </div>

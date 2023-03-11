@@ -16,6 +16,9 @@
 
 # properties
 /properties/
+/carpe-fe/.env
+/carpe-fe/design
+
 
 npm-debug.log*
 yarn-debug.log*

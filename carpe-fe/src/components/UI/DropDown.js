@@ -39,14 +39,14 @@ function DropDown({
   return (
     <>
       <div className="relative inline-block text-left">
-        <div className="flex gap-4 justify-between">
+        <div className="flex gap-4 justify-between px-4 py-2">
           <span className="text-white" htmlFor="menu-button">
             {label}
           </span>
           <button
             ref={buttonRef}
             type="button"
-            className="inline-flex md:w-72 justify-center rounded-md border-none bg-transparent px-4 py-2  font-medium text-white shadow-sm focus:outline-none focus:ring-0  select-none"
+            className="inline-flex md:w-72 mr-4 justify-center rounded-md border-none bg-transparent  font-medium text-white shadow-sm focus:outline-none focus:ring-0  select-none"
             id="menu-button"
             aria-expanded="true"
             aria-haspopup="true"

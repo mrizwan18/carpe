@@ -1,4 +1,5 @@
 import React from "react";
+import Footer from "./components/Footer";
 import HomepageHero from "./components/HomepageHero";
 import HomepagePools from "./components/HomepagePools";
 import Navbar from "./components/UI/Navbar";
@@ -9,7 +10,7 @@ const App = () => {
       <Navbar />
       <HomepageHero />
       <HomepagePools />
-      <div className="flex justify-center"></div>
+      <Footer />
     </div>
   );
 };

@@ -60,12 +60,12 @@ function Pool({
           </div>
           <div className="w-full text-center -mt-7">
             <button
-              className="bg-primaryOrange-light hover:bg-primaryOrange-dark text-white px-8 py-4 rounded font-semibold"
+              className="bg-primaryOrange-light hover:bg-primaryOrange-dark text-white px-8 py-4 rounded font-semibold text-bold text-xl"
               onClick={() => {
                 alert(poolId);
               }}
             >
-              Pool it
+              POOL
             </button>
           </div>
         </div>

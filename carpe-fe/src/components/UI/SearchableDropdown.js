@@ -9,9 +9,17 @@ function DropDown({
   setSelectedValue,
 }) {
   const [isOpen, setIsOpen] = useState(false);
+  const [filteredOptions, setFilteredOptions] = useState(options);
 
   const dropdownRef = useRef(undefined);
   const buttonRef = useRef(undefined);
+
+  const searchValue = function (key) {
+    options.filter((opt) => {
+      console.log(opt);
+      opt.includes(key);
+    });
+  };
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -84,8 +92,39 @@ function DropDown({
           tabIndex="-1"
         >
           {isOpen && (
-            <div className="p-2" role="none">
-              {options.map(function (opt, index) {
+            <div className="p-2 max-h-48 overflow-y-auto" role="none">
+              <div class="p-3">
+                <label for="input-group-search" class="sr-only">
+                  Search
+                </label>
+                <div class="relative">
+                  <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
+                    <svg
+                      class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                      aria-hidden="true"
+                      fill="currentColor"
+                      viewBox="0 0 20 20"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        fill-rule="evenodd"
+                        d="M8 4a4 4 0 100 8 4 4 0 000-8zM2 8a6 6 0 1110.89 3.476l4.817 4.817a1 1 0 01-1.414 1.414l-4.816-4.816A6 6 0 012 8z"
+                        clip-rule="evenodd"
+                      ></path>
+                    </svg>
+                  </div>
+                  <input
+                    type="text"
+                    id="input-group-search"
+                    class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
+                    placeholder="Search user"
+                    onChange={(e) => {
+                      searchValue(e.target.value);
+                    }}
+                  />
+                </div>
+              </div>
+              {filteredOptions.map(function (opt, index) {
                 return (
                   <a
                     key={index}

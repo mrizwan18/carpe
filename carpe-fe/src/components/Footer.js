@@ -9,7 +9,7 @@ import {
 function Footer() {
   return (
     <>
-      <div className="flex flex-col md:flex-row justify-center md:justify-around justify-items-center w-2/3 mx-auto border-t-2 border-gray-500 mt-20 pb-12">
+      <div className="flex flex-col md:flex-row justify-center md:justify-around justify-items-center w-2/3 mx-auto border-t-2 border-gray-500 mt-20 pb-12 select-none">
         <div className="flex flex-col gap-y-2 text-white">
           <h2 className="text-white p-4 md:text-2xl">
             Request a Feature or Report a Bug.
@@ -57,7 +57,7 @@ function Footer() {
           </div>
         </div>
       </div>
-      <div className="flex justify-center gap-x-2 text-white p-4">
+      <div className="flex justify-center gap-x-2 text-white p-4 select-none">
         <div>2023 Carpe</div>
         <div>
           <AiFillTrademarkCircle />

@@ -1,27 +1,11 @@
 import React from "react";
 import { BsPinMapFill } from "react-icons/bs";
 
-function Pool({
-  image,
-  altImageText,
-  tag,
-  tagColor,
-  headerText,
-  title,
-  mapLink,
-  address,
-  timein,
-  timeout,
-  poolId,
-}) {
+function PoolPlaceholder() {
   return (
     <>
       <div className="select-none">
-        <img
-          src={image}
-          alt={altImageText}
-          className="w-full object-cover object-center rounded-lg shadow-md h-72"
-        />
+        <div className=""></div>
 
         <div className="relative px-4 -mt-16  ">
           <div className="bg-white p-6 rounded-lg shadow-lg">
@@ -74,4 +58,4 @@ function Pool({
   );
 }
 
-export default Pool;
+export default PoolPlaceholder;

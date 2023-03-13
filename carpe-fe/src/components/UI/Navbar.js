@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import { NavLink } from "react-router-dom";
 
 function Navbar() {
   const [isToggle, setIsToggle] = useState(true);
@@ -9,7 +10,7 @@ function Navbar() {
         <div className="flex justify-between h-16">
           <div className="flex">
             <div className="flex-shrink-0 flex items-center">
-              <a href="#">
+              <NavLink to="/">
                 <svg
                   className="h-8 w-8 text-primaryOrange-light"
                   viewBox="0 0 24 24"
@@ -21,16 +22,16 @@ function Navbar() {
                     fill="currentColor"
                   />
                 </svg>
-              </a>
+              </NavLink>
               <span className="text-3xl font-bold px-3">Carpe</span>
             </div>
             <div className="hidden sm:-my-px sm:ml-6 sm:flex sm:space-x-8">
-              <a
-                href="#"
+              <NavLink
+                to="/support"
                 className="border-primaryOrange-light text-gray-900 inline-flex items-center px-1 pt-1 border-b-2 text-sm font-medium"
               >
                 Support
-              </a>
+              </NavLink>
             </div>
           </div>
           <div className="sm:hidden flex items-center">
@@ -52,34 +53,40 @@ function Navbar() {
             </button>
           </div>
           <div className="hidden sm:ml-6 sm:flex sm:items-center gap-2">
-            <button className="bg-primaryOrange-light hover:bg-primaryOrange-light text-white font-semibold py-2 px-4 rounded">
+            <NavLink
+              to="/register"
+              className="bg-primaryOrange-light hover:bg-primaryOrange-light text-white font-semibold py-2 px-4 rounded"
+            >
               Login
-            </button>
-            <button className="bg-primaryOrange-light hover:bg-primaryOrange-light text-white font-semibold py-2 px-4 rounded">
+            </NavLink>
+            <NavLink
+              to="/register"
+              className="bg-primaryOrange-light hover:bg-primaryOrange-light text-white font-semibold py-2 px-4 rounded"
+            >
               Signup
-            </button>
+            </NavLink>
           </div>
         </div>
       </div>
       <div id="menu" className={"sm:hidden " + (isToggle ? "hidden" : null)}>
-        <a
-          href="#"
+        <NavLink
+          to="/support"
           className="block px-4 py-2 text-primaryBg hover:bg-primaryOrange-dark focus:bg-primaryOrange-dark  hover:text-white focus:text-white"
         >
           Support
-        </a>
-        <a
-          href="#"
+        </NavLink>
+        <NavLink
+          to="/register"
           className="block px-4 py-2 text-primaryBg hover:bg-primaryOrange-dark focus:bg-primaryOrange-dark  hover:text-white focus:text-white"
         >
           Login
-        </a>
-        <a
-          href="#"
+        </NavLink>
+        <NavLink
+          to="/register"
           className="block px-4 py-2 text-primaryBg hover:bg-primaryOrange-dark focus:bg-primaryOrange-dark hover:text-white focus:text-white"
         >
           Signup
-        </a>
+        </NavLink>
       </div>
     </nav>
   );

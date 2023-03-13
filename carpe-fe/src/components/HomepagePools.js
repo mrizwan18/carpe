@@ -63,32 +63,6 @@ function HomepagePools() {
           timeout={"6:00 P.M."}
           poolId={"465768"}
         />
-        <Pool
-          image={"/car_1.webp"}
-          altImageText={"test"}
-          tag={"HOT"}
-          tagColor={"primaryOrange-light"}
-          headerText={"2 seats"}
-          title={"New Pool bro"}
-          mapLink={"https://test.com"}
-          address={"ABC Roads"}
-          timein={"8:00 A.M."}
-          timeout={"6:00 P.M."}
-          poolId={"465768"}
-        />
-        <Pool
-          image={"/car_1.webp"}
-          altImageText={"test"}
-          tag={"HOT"}
-          tagColor={"primaryRed-light"}
-          headerText={"2 seats"}
-          title={"New Pool bro"}
-          mapLink={"https://test.com"}
-          address={"ABC Roads"}
-          timein={"8:00 A.M."}
-          timeout={"6:00 P.M."}
-          poolId={"465768"}
-        />
       </div>
       <Pagination
         currentPage={currentPage}

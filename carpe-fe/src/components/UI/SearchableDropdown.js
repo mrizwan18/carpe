@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 
 function DropDown({
   label,
+  searchPlaceholder,
   labelColor = "white",
   heading,
   options,
@@ -14,12 +15,19 @@ function DropDown({
   const dropdownRef = useRef(undefined);
   const buttonRef = useRef(undefined);
 
-  const searchValue = function (key) {
-    options.filter((opt) => {
-      console.log(opt);
-      opt.includes(key);
-    });
-  };
+  function searchValue(key) {
+    if (key) {
+      const filteredOpts = options.filter((opt) => {
+        return opt.toLowerCase().includes(key.toLowerCase());
+      });
+      if (filteredOpts.length == 0) {
+        filteredOpts.push("No Record Found");
+      }
+      setFilteredOptions(filteredOpts);
+    } else {
+      setFilteredOptions(options);
+    }
+  }
 
   useEffect(() => {
     const handleClickOutside = (event) => {
@@ -32,6 +40,7 @@ function DropDown({
         return;
       }
 
+      setFilteredOptions(options);
       setIsOpen(false);
     };
 
@@ -47,8 +56,8 @@ function DropDown({
 
   return (
     <>
-      <div className="relative inline-block text-left">
-        <div className="flex gap-4 justify-between px-4 py-2">
+      <div className="relative inline-block text-left font-normal w-full md:w-52 justify-center justify-items-center box-border h-10 border border-solid border-gray-300 bg-clip-padding py-2 px-3 appearance-none rounded-lg ">
+        <div className="flex justify-between">
           <span className={"text-" + labelColor} htmlFor="menu-button">
             {label}
           </span>
@@ -56,7 +65,7 @@ function DropDown({
             ref={buttonRef}
             type="button"
             className={
-              "inline-flex md:w-72 mr-4 justify-center rounded-md border-none bg-transparent  font-medium focus:outline-none focus:ring-0  select-none " +
+              "text-sm truncate mr-2 w-full leading-tight justify-center rounded-md border-none bg-transparent  focus:outline-none focus:ring-0  select-none " +
               "text-" +
               labelColor
             }
@@ -69,7 +78,7 @@ function DropDown({
           >
             {selectedValue || heading}
             <svg
-              className="absolute ml-4 mt-1 h-5 w-5 right-0"
+              className="absolute  h-5 w-5 right-0 top-2"
               viewBox="0 0 20 20"
               fill="currentColor"
               aria-hidden="true"
@@ -92,15 +101,15 @@ function DropDown({
           tabIndex="-1"
         >
           {isOpen && (
-            <div className="p-2 max-h-48 overflow-y-auto" role="none">
-              <div class="p-3">
+            <div className="" role="none">
+              <div class="absolute top-0 p-3">
                 <label for="input-group-search" class="sr-only">
                   Search
                 </label>
                 <div class="relative">
                   <div class="absolute inset-y-0 left-0 flex items-center pl-3 pointer-events-none">
                     <svg
-                      class="w-5 h-5 text-gray-500 dark:text-gray-400"
+                      class="w-5 h-5 text-ehite dark:text-white"
                       aria-hidden="true"
                       fill="currentColor"
                       viewBox="0 0 20 20"
@@ -116,32 +125,44 @@ function DropDown({
                   <input
                     type="text"
                     id="input-group-search"
-                    class="block w-full p-2 pl-10 text-sm text-gray-900 border border-gray-300 rounded-lg bg-gray-50 focus:ring-blue-500 focus:border-blue-500 dark:bg-gray-600 dark:border-gray-500 dark:placeholder-gray-400 dark:text-white dark:focus:ring-blue-500 dark:focus:border-blue-500"
-                    placeholder="Search user"
+                    class="block w-full p-2 pl-10 text-sm text-white border-none  rounded-lg bg-gray-800 focus:ring-0 focus:border-0 dark:bg-gray-800 dark:border-gray-500 dark:placeholder-white dark:text-white dark:focus:ring-0 dark:focus:border-0"
+                    placeholder={searchPlaceholder}
                     onChange={(e) => {
                       searchValue(e.target.value);
                     }}
                   />
                 </div>
               </div>
-              {filteredOptions.map(function (opt, index) {
-                return (
-                  <a
-                    key={index}
-                    href="#"
-                    className="text-gray-700 block px-4 py-2 select-none text-sm border-b-2 border-gray-200 hover:bg-primaryOrange-light hover:text-white mt-1 transition-all"
-                    role="menuitem"
-                    tabIndex="-1"
-                    id="menu-item-0"
-                    onClick={(e) => {
-                      setSelectedValue(e.target.text);
-                      setIsOpen(!isOpen);
-                    }}
-                  >
-                    {opt}
-                  </a>
-                );
-              })}
+              <div className="mt-14 pb-6 max-h-48 overflow-y-auto">
+                {filteredOptions.map(function (opt, index) {
+                  return (
+                    <a
+                      key={index}
+                      href="#"
+                      className={
+                        "text-gray-700 block px-4 py-2 select-none text-sm border-b-2 border-gray-200 hover:bg-primaryOrange-light hover:text-white mt-1 transition-all " +
+                        (selectedValue == opt
+                          ? "bg-primaryOrange-light text-white"
+                          : "") +
+                        ("No Record Found" == opt
+                          ? " cursor-default hover:bg-transparent hover:text-gray-700"
+                          : "")
+                      }
+                      role="menuitem"
+                      tabIndex="-1"
+                      id="menu-item-0"
+                      onClick={(e) => {
+                        if (e.target.text != "No Record Found") {
+                          setSelectedValue(e.target.text);
+                          setIsOpen(!isOpen);
+                        }
+                      }}
+                    >
+                      {opt}
+                    </a>
+                  );
+                })}
+              </div>
             </div>
           )}
         </div>

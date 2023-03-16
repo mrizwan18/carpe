@@ -54,7 +54,7 @@ function Navbar() {
           </div>
           <div className="hidden sm:ml-6 sm:flex sm:items-center gap-2">
             <NavLink
-              to="/register"
+              to="/login"
               className="bg-primaryOrange-light hover:bg-primaryOrange-light text-white font-semibold py-2 px-4 rounded"
             >
               Login

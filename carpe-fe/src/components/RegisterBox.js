@@ -1,30 +1,74 @@
 import React, { useState } from "react";
 import Footer from "./Footer";
 import Navbar from "./UI/Navbar";
+import SearchableDropdown from "./UI/SearchableDropdown";
 import { BsGoogle } from "react-icons/bs";
 import { CgFacebook } from "react-icons/cg";
 import { FaLinkedinIn } from "react-icons/fa";
 import { NavLink } from "react-router-dom";
+var passwordValidator = require("password-validator");
 
-function LoginBox() {
+function RegisterBox() {
+  var schema = new passwordValidator();
+  schema
+    .is()
+    .min(8)
+    .is()
+    .max(100)
+    .has()
+    .uppercase()
+    .has()
+    .lowercase()
+    .has()
+    .digits(1)
+    .has()
+    .not()
+    .spaces();
+
+  const validateEmail = (email) => {
+    return String(email)
+      .toLowerCase()
+      .match(
+        /^(([^<>()[\]\\.,;:\s@"]+(\.[^<>()[\]\\.,;:\s@"]+)*)|(".+"))@((\[[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\.[0-9]{1,3}\])|(([a-zA-Z\-0-9]+\.)+[a-zA-Z]{2,}))$/
+      );
+  };
+
+  const [city, setCity] = useState("");
   const [userId, setUserId] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [userIdError, setUserIdError] = useState(false);
+  const [emailError, setEmailError] = useState(false);
   const [passwordError, setPasswordError] = useState(false);
   const [errors, setErrors] = useState([]);
+  const cities = [];
 
   function submitForm() {
     setErrors([]);
     setUserIdError(false);
+    setEmailError(false);
     setPasswordError(false);
     let formErrors = [];
     if (!userId) {
-      formErrors.push("Valid User Id is required");
+      formErrors.push("User Id is required");
       setUserIdError(true);
     }
-
+    if (!email) {
+      formErrors.push("Email is required");
+      setEmailError(true);
+    }
+    if (!validateEmail(email)) {
+      formErrors.push("Please provide a valid email");
+      setEmailError(true);
+    }
     if (!password) {
-      formErrors.push("Valid Password is required");
+      formErrors.push("We can't create your account without password");
+      setPasswordError(true);
+    }
+    if (!schema.validate(password)) {
+      formErrors.push(
+        "Please choose a more strong password. Make sure your password contains at least 1 Uppercase letter, 1 lowercase letter, 1 digit, and minimum 8 length."
+      );
       setPasswordError(true);
       setPassword("");
     }
@@ -79,7 +123,7 @@ function LoginBox() {
             </div>
           )}
           <div className="p-6 mb-0 text-center bg-white border-b-0 rounded-t-2xl text-gray-800 font-bold">
-            <h5>Login with</h5>
+            <h5>Register with</h5>
           </div>
           <div className="flex flex-col lg:flex-row justify-items-center gap-y-4 lg:gap-x-4 lg:justify-around m-4 mt-0">
             <div className="flex font-bold text-center justify-evenly p-6 lg:gap-x-4 text-gray-800 align-middle transition-all bg-transparent border border-gray-300 border-solid rounded-lg shadow-none cursor-pointer hover:scale-102 leading-pro ease-soft-in tracking-tight-soft hover:bg-primaryOrange-light hover:text-white hover:cursor-pointer duration-200">
@@ -100,24 +144,52 @@ function LoginBox() {
           </div>
           <div className="flex-auto p-4">
             <form role="form text-left">
+              <div className="flex justify-between gap-2">
+                <div className="mb-4 w-2/3">
+                  <input
+                    type="text"
+                    className={
+                      "text-sm focus:shadow-soft-primary-outline leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 px-3 font-normal text-gray-700 transition-all focus:border-gray-300 focus:bg-white focus:text-gray-700 focus:outline-none focus:transition-shadow " +
+                      (userIdError ? "border-red-500" : "")
+                    }
+                    placeholder="User Id"
+                    name="userId"
+                    aria-label="User Id"
+                    autoComplete="userId"
+                    value={userId}
+                    onChange={(e) => {
+                      setUserId(e.target.value);
+                    }}
+                  />
+                </div>
+
+                <SearchableDropdown
+                  searchPlaceholder={"Search City"}
+                  labelColor={"gray-700"}
+                  heading={"Select City"}
+                  options={cities}
+                  selectedValue={city}
+                  setSelectedValue={setCity}
+                />
+              </div>
               <div className="mb-4">
                 <input
-                  type="text"
+                  type="email"
                   className={
                     "text-sm focus:shadow-soft-primary-outline leading-5.6 ease-soft block w-full appearance-none rounded-lg border border-solid border-gray-300 bg-white bg-clip-padding py-2 px-3 font-normal text-gray-700 transition-all focus:border-gray-300 focus:bg-white focus:text-gray-700 focus:outline-none focus:transition-shadow " +
-                    (userIdError ? "border-red-500" : "")
+                    (emailError ? "border-red-500" : "")
                   }
-                  placeholder="User Id"
-                  name="userId"
-                  aria-label="User Id"
-                  autoComplete="userId"
-                  value={userId}
+                  placeholder="Email"
+                  name="email"
+                  aria-label="Email"
+                  value={email}
+                  aria-describedby="email-addon"
+                  autoComplete="email"
                   onChange={(e) => {
-                    setUserId(e.target.value);
+                    setEmail(e.target.value);
                   }}
                 />
               </div>
-
               <div className="mb-4">
                 <input
                   type="password"
@@ -133,21 +205,41 @@ function LoginBox() {
                     setPassword(e.target.value);
                   }}
                 />
+                <div className="mt-4 text-sm text-primaryOrange-dark">
+                  Please make sure your password contains at least 1 Uppercase
+                  letter, 1 lowercase letter, 1 digit, and minimum 8 length.
+                </div>
               </div>
-
+              <div className="min-h-6 pl-7 mb-0.5 block">
+                <input
+                  id="terms"
+                  className="w-5 h-5 ease-soft -ml-7 rounded-1.4 checked:bg-primaryOrange-light   relative float-left mt-1 cursor-pointer appearance-none border border-solid border-slate-800 bg-white bg-contain bg-center bg-no-repeat align-top transition-all after:absolute after:flex after:h-full after:w-full after:items-center after:justify-center after:text-white after:opacity-0 after:transition-all after:content-['\2713'] checked:border-0 checked:border-transparent checked:bg-transparent checked:after:opacity-100"
+                  type="checkbox"
+                  value=""
+                />
+                <label
+                  className="mb-2 ml-1 font-normal select-none text-sm text-slate-700"
+                  htmlFor="terms"
+                >
+                  I agree the with &nbsp;
+                  <a href="#" className="font-bold text-slate-700">
+                    Terms and Conditions
+                  </a>
+                </label>
+              </div>
               <div className="text-center">
                 <button
                   type="button"
                   onClick={() => submitForm()}
                   className="inline-block w-full px-6 py-3 mt-6 mb-2 font-bold text-center text-white uppercase align-middle transition-all bg-primaryOrange-light border-0 rounded-lg cursor-pointer hover:bg-primaryOrange-dark"
                 >
-                  Login
+                  Sign up
                 </button>
               </div>
               <p className="mt-4 mb-0 leading-normal text-sm">
-                Don't have an account?
-                <NavLink to="/register" className="font-bold text-slate-700">
-                  Register
+                Already have an account?
+                <NavLink to="/login" className="font-bold text-slate-700">
+                  Sign in
                 </NavLink>
               </p>
             </form>
@@ -159,4 +251,4 @@ function LoginBox() {
   );
 }
 
-export default LoginBox;
+export default RegisterBox;

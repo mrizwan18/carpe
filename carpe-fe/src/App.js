@@ -3,6 +3,7 @@ import Homepage from "./components/Homepage";
 import About from "./components/About";
 import Contact from "./components/Contact";
 import PNF from "./components/PNF";
+import RegisterBox from "./components/RegisterBox";
 import LoginBox from "./components/LoginBox";
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 
@@ -14,7 +15,8 @@ const App = () => {
           <Route path="/" element={<Homepage />} />
           <Route path="/about" element={<About />} />
           <Route path="/contact" element={<Contact />} />
-          <Route path="/register" element={<LoginBox />} />
+          <Route path="/register" element={<RegisterBox />} />
+          <Route path="/login" element={<LoginBox />} />
           <Route path="*" element={<PNF />} />
         </Routes>
       </div>

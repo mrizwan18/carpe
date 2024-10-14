@@ -9,7 +9,7 @@ function HomepagePools() {
   const pools = useSelector(selectPools); // Get pools from the Redux store
 
   // Calculate the pools to display based on the current page
-  const recordsPerPage = Number(process.env.REACT_APP_RECORDS_PER_PAGE) || 4; // Default to 4 per page if not set
+  const recordsPerPage = Number(process.env.REACT_APP_RECORDS_PER_PAGE) || 6; 
   const startIdx = (currentPage - 1) * recordsPerPage;
   const selectedPools = pools.slice(startIdx, startIdx + recordsPerPage);
 
@@ -37,8 +37,8 @@ function HomepagePools() {
         currentPage={currentPage}
         recordsPerPage={recordsPerPage}
         setCurrentPage={setCurrentPage}
-        totalRecords={pools.length} // Use total pool count from the store
-        pagesPernav={Number(process.env.REACT_APP_PAGES_PER_NAV) || 5} // Default to 5 pages per navigation if not set
+        totalRecords={pools.length}
+        pagesPernav={Number(process.env.REACT_APP_PAGES_PER_NAV) || 5}
       />
     </div>
   );

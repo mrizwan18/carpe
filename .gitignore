@@ -3,6 +3,7 @@
 # dependencies
 /carpe-be/node_modules
 /carpe-fe/node_modules
+/carpe-ui/node_modules
 /.pnp
 .pnp.js
 

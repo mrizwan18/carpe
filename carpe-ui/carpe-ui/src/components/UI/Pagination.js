@@ -9,117 +9,90 @@ function Pagination({
   totalRecords,
   pagesPernav,
 }) {
-  const [showRight, setShowRight] = useState(false);
   const totalPages = Math.ceil(totalRecords / recordsPerPage);
+  const [showRight, setShowRight] = useState(currentPage < totalPages);
 
   const pageRange = useMemo(() => {
     let pages = [];
-    let totalPagesEnd = currentPage + pagesPernav;
-    setShowRight(totalPagesEnd < totalPages);
-    totalPagesEnd = showRight ? totalPagesEnd : totalPages;
-    let cpage =
-      currentPage == 1
-        ? 1
-        : showRight
-        ? currentPage - 1
-        : totalPages - pagesPernav;
+    const startPage = Math.max(1, currentPage);
+    let endPage = Math.min(startPage + pagesPernav - 1, totalPages);
 
-    cpage = cpage < 1 ? 1 : cpage;
+    setShowRight(endPage < totalPages);
 
-    for (; cpage <= totalPagesEnd; cpage++) {
-      pages.push(cpage);
+    for (let i = startPage; i <= endPage; i++) {
+      pages.push(i);
     }
     return pages;
-  }, [currentPage, showRight]);
+  }, [currentPage, totalPages, pagesPernav]);
+
+  const handleNextPage = () => {
+    if (currentPage < totalPages) {
+      setCurrentPage(currentPage + 1);
+    }
+  };
+
+  const handlePreviousPage = () => {
+    if (currentPage > 1) {
+      setCurrentPage(currentPage - 1);
+    }
+  };
 
   return (
-    <div className="flex font-bold mt-20">
-      <div>
+    <div className="flex justify-center items-center font-bold mt-10">
+      {/* Previous Button */}
+      <div className="flex items-center">
         {currentPage > 1 && (
-          <div className="flex md:gap-4">
-            <div className="flex">
-              <MdOutlineNavigateBefore
-                size={24}
-                color="white"
-                className="cursor-pointer m-1 md:m-2 transition-all"
-                onClick={() => {
-                  setCurrentPage(1);
-                }}
-              />
-              <MdOutlineNavigateBefore
-                size={24}
-                color="white"
-                className="cursor-pointer m-1 -ml-6 md:mt-2 transition-all "
-                onClick={() => {
-                  setCurrentPage(1);
-                }}
-              />
-            </div>
+          <>
+            <MdOutlineNavigateBefore
+              size={24}
+              color="white"
+              className="cursor-pointer m-1 transition-all"
+              onClick={() => setCurrentPage(1)} // Go to first page
+            />
             <AiFillCaretLeft
               size={24}
               color="white"
-              className="cursor-pointer m-1 md:m-2"
-              onClick={() => {
-                setCurrentPage(--currentPage);
-              }}
+              className="cursor-pointer m-1 transition-all"
+              onClick={handlePreviousPage} // Go to previous page
             />
-          </div>
+          </>
         )}
       </div>
-      <div>
-        <ol className="flex justify-between md:gap-2">
-          {pageRange.map((cpage) => {
-            return (
-              <li
-                key={cpage}
-                value={cpage}
-                href="#"
-                className={
-                  "text-white block px-2 py-1 md:px-4 md:py-2  select-none hover:bg-primaryOrange-light hover:text-white rounded-full  transition-all cursor-pointer " +
-                  (currentPage == cpage
-                    ? "bg-primaryOrange-light"
-                    : "bg-transparent")
-                }
-                onClick={(e) => {
-                  setCurrentPage(e.target.value);
-                }}
-              >
-                {cpage}
-              </li>
-            );
-          })}
-        </ol>
+
+      {/* Page Numbers */}
+      <div className="flex space-x-2">
+        {pageRange.map((page) => (
+          <span
+            key={page}
+            className={`text-white px-4 py-2 rounded-full cursor-pointer transition-all ${
+              currentPage === page
+                ? "bg-primaryOrange-light text-white"
+                : "bg-transparent hover:bg-primaryOrange-light"
+            }`}
+            onClick={() => setCurrentPage(page)}
+          >
+            {page}
+          </span>
+        ))}
       </div>
-      <div>
+
+      {/* Next Button */}
+      <div className="flex items-center">
         {showRight && (
-          <div className="flex md:gap-4">
+          <>
             <AiFillCaretRight
               size={24}
               color="white"
-              className="cursor-pointer m-1 md:m-2 transition-all"
-              onClick={() => {
-                setCurrentPage(++currentPage);
-              }}
+              className="cursor-pointer m-1 transition-all"
+              onClick={handleNextPage} // Go to next page
             />
-            <div className="flex">
-              <MdOutlineNavigateNext
-                size={24}
-                color="white"
-                className="cursor-pointer m-1  md:m-2 transition-all"
-                onClick={() => {
-                  setCurrentPage(totalPages);
-                }}
-              />
-              <MdOutlineNavigateNext
-                size={24}
-                color="white"
-                className="cursor-pointer m-1 md:mt-2 transition-all -ml-6"
-                onClick={() => {
-                  setCurrentPage(totalPages);
-                }}
-              />
-            </div>
-          </div>
+            <MdOutlineNavigateNext
+              size={24}
+              color="white"
+              className="cursor-pointer m-1 transition-all"
+              onClick={() => setCurrentPage(totalPages)} // Go to last page
+            />
+          </>
         )}
       </div>
     </div>

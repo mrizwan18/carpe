@@ -1,0 +1,19 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: carpe-be
+spec:
+  replicas: 3
+  selector:
+    matchLabels:
+      app: carpe-be
+  template:
+    metadata:
+      labels:
+        app: carpe-be
+    spec:
+      containers:
+        - name: carpe-be
+          image: gcr.io/carpe-438721/carpe:latest
+          ports:
+            - containerPort: 8080

@@ -1,0 +1,49 @@
+name: Carpe GKE CI/CD Pipeline
+
+on:
+  push:
+    branches:
+      - main
+
+jobs:
+  build-and-deploy:
+    runs-on: ubuntu-latest
+
+    steps:
+      # Checkout the code
+      - name: Checkout code
+        uses: actions/checkout@v2
+
+      # Set up Google Cloud authentication
+      - name: Set up Google Cloud authentication
+        uses: google-github-actions/auth@v1
+        with:
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
+
+      # Set up Docker to use Google Cloud Registry
+      - name: Configure Docker to use Google Container Registry
+        run: |
+          echo "Login to gcr.io"
+          gcloud auth configure-docker
+
+      # Build the Docker image
+      - name: Build the Docker image
+        run: |
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/carpe:latest .
+
+      # Push the Docker image to Google Container Registry
+      - name: Push Docker image to Google Container Registry
+        run: |
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/carpe:latest
+
+      # Set up Google Kubernetes Engine (GKE)
+      - name: Set up GKE
+        uses: google-github-actions/get-gke-credentials@v1
+        with:
+          cluster_name: ${{ secrets.GKE_CLUSTER_NAME }}
+          location: ${{ secrets.GKE_ZONE }}
+
+      # Deploy the application to the GKE cluster
+      - name: Deploy to GKE
+        run: |
+          kubectl set image deployment/carpe-be carpe-be=gcr.io/${{ secrets.GCP_PROJECT_ID }}/carpe:latest

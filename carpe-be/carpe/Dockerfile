@@ -1,8 +1,8 @@
-FROM openjdk:17-alpine
+FROM --platform=linux/amd64 openjdk:17-slim
 
 WORKDIR /app
 
-COPY target/carpe.jar /app/carpe.jar
+COPY target/carpe-0.0.1-SNAPSHOT.jar /app/carpe.jar
 
 # Step 4: Expose the application port (8080 in this case)
 EXPOSE 8080

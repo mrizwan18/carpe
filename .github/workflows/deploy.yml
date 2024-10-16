@@ -55,7 +55,17 @@ jobs:
           location: ${{ secrets.GKE_ZONE }}
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      # Deploy the application to the GKE cluster
-      - name: Deploy to GKE
+      # Update the image in the Kubernetes deployment
+      - name: Update Kubernetes deployment
         run: |
           kubectl set image deployment/carpe-be carpe-be=gcr.io/${{ secrets.GCP_PROJECT_ID }}/carpe:latest
+
+      # Rollout restart to ensure pods use the latest image
+      - name: Rollout restart deployment
+        run: |
+          kubectl rollout restart deployment/carpe-be
+
+      # Optional: Verify that the deployment was successful
+      - name: Check rollout status
+        run: |
+          kubectl rollout status deployment/carpe-be

@@ -29,7 +29,7 @@ jobs:
       # Build the Docker image
       - name: Build the Docker image
         run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/carpe:latest .
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/carpe:latest -f carpe-be/carpe/Dockerfile .
 
       # Push the Docker image to Google Container Registry
       - name: Push Docker image to Google Container Registry

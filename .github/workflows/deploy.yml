@@ -42,6 +42,7 @@ jobs:
         with:
           cluster_name: ${{ secrets.GKE_CLUSTER_NAME }}
           location: ${{ secrets.GKE_ZONE }}
+          credentials_json: ${{ secrets.GCP_SA_KEY }}
 
       # Deploy the application to the GKE cluster
       - name: Deploy to GKE

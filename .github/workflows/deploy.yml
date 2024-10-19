@@ -13,6 +13,11 @@ jobs:
       # Checkout the code
       - name: Checkout code
         uses: actions/checkout@v2
+      # env vars
+      - name: Set up environment variables
+        run: |
+          echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> $GITHUB_ENV
+          echo "MONGODB_DATABASE=${{ secrets.MONGODB_DATABASE }}" >> $GITHUB_ENV
 
       # Set up JDK 17
       - name: Set up JDK 17

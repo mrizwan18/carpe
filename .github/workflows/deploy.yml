@@ -64,6 +64,9 @@ jobs:
       - name: Update Kubernetes deployment
         run: |
           kubectl set image deployment/carpe-be carpe-be=gcr.io/${{ secrets.GCP_PROJECT_ID }}/carpe:latest
+          kubectl set env deployment/carpe-be MONGODB_URI=${{ secrets.MONGODB_URI }}
+          kubectl set env deployment/carpe-be MONGODB_DATABASE=${{ secrets.MONGODB_DATABASE }}
+      
 
       # Rollout restart to ensure pods use the latest image
       - name: Rollout restart deployment

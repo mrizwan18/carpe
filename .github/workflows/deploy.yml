@@ -18,6 +18,8 @@ jobs:
         run: |
           echo "MONGODB_URI=${{ secrets.MONGODB_URI }}" >> $GITHUB_ENV
           echo "MONGODB_DATABASE=${{ secrets.MONGODB_DATABASE }}" >> $GITHUB_ENV
+          echo "OAUTH_CLIENT_ID=${{ secrets.OAUTH_CLIENT_ID }}" >> $GITHUB_ENV
+          echo "OAUTH_CLIENT_SECRET=${{ secrets.OAUTH_CLIENT_SECRET }}" >> $GITHUB_ENV
 
       # Set up JDK 17
       - name: Set up JDK 17
@@ -63,9 +65,11 @@ jobs:
       # Update the image in the Kubernetes deployment
       - name: Update Kubernetes deployment
         run: |
-          kubectl set image deployment/carpe-be carpe-be=gcr.io/${{ secrets.GCP_PROJECT_ID }}/carpe:latest
+          kubectl set image deployment/carpe-be carpe-be=gcr.io/${{ secrets.GCP_PROJECT_ID }}/carpe:latest --record
           kubectl set env deployment/carpe-be MONGODB_URI=${{ secrets.MONGODB_URI }}
           kubectl set env deployment/carpe-be MONGODB_DATABASE=${{ secrets.MONGODB_DATABASE }}
+          kubectl set env deployment/carpe-be OAUTH_CLIENT_ID=${{ secrets.OAUTH_CLIENT_ID }}
+          kubectl set env deployment/carpe-be OAUTH_CLIENT_SECRET=${{ secrets.OAUTH_CLIENT_SECRET }}
       
 
       # Rollout restart to ensure pods use the latest image

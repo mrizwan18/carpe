@@ -20,6 +20,8 @@ jobs:
           echo "MONGODB_DATABASE=${{ secrets.MONGODB_DATABASE }}" >> $GITHUB_ENV
           echo "OAUTH_CLIENT_ID=${{ secrets.OAUTH_CLIENT_ID }}" >> $GITHUB_ENV
           echo "OAUTH_CLIENT_SECRET=${{ secrets.OAUTH_CLIENT_SECRET }}" >> $GITHUB_ENV
+          echo "JWT_EXPIRY=${{ secrets.JWT_EXPIRY }}" >> $GITHUB_ENV
+          echo "JWT_SECRET=${{ secrets.JWT_SECRET }}" >> $GITHUB_ENV
 
       # Set up JDK 17
       - name: Set up JDK 17

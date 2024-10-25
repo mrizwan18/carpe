@@ -10,10 +10,10 @@ public class WebConfig implements WebMvcConfigurer {
     @Override
     public void addCorsMappings(CorsRegistry registry) {
         registry.addMapping("/**")
-                .allowedOrigins("https://ridecarpe.com", "http://localhost:3000")  // Add localhost and frontend domain
+                .allowedOrigins("https://ridecarpe.com", "http://localhost:3000")  // Add frontend origins
                 .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                .allowedHeaders("Authorization", "Content-Type")  // Allow Authorization header
                 .allowCredentials(true)
                 .maxAge(3600);
     }
 }
-

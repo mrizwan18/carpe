@@ -11,6 +11,7 @@ public class AuthResponse {
     private String message;
     private HttpStatus status;
     private User user;
+    private String token;
 
     // Constructor for responses without user data
     public AuthResponse(String message, HttpStatus status) {

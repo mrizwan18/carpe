@@ -39,7 +39,6 @@ public class AuthService {
         if (userOptional.isPresent()) {
             User user = userOptional.get();
             if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-                // Generate JWT token
                 String token = generateJwtToken(user);
 
                 return new AuthResponse("Login successful!", HttpStatus.OK, user, token);

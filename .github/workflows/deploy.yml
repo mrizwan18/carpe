@@ -72,6 +72,8 @@ jobs:
           kubectl set env deployment/carpe-be MONGODB_DATABASE=${{ secrets.MONGODB_DATABASE }}
           kubectl set env deployment/carpe-be OAUTH_CLIENT_ID=${{ secrets.OAUTH_CLIENT_ID }}
           kubectl set env deployment/carpe-be OAUTH_CLIENT_SECRET=${{ secrets.OAUTH_CLIENT_SECRET }}
+          kubectl set env deployment/carpe-be JWT_SECRET=${{ secrets.JWT_SECRET }}
+          kubectl set env deployment/carpe-be JWT_EXPIRY=${{ secrets.JWT_EXPIRY }}
       
 
       # Rollout restart to ensure pods use the latest image

@@ -1,96 +1,92 @@
 package com.zabarzer.carpe.services;
 
-import com.zabarzer.carpe.dto.AuthResponse;
-import com.zabarzer.carpe.dto.GoogleLoginRequest;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdToken;
+import com.google.api.client.googleapis.auth.oauth2.GoogleIdTokenVerifier;
+import com.google.api.client.http.javanet.NetHttpTransport;
+import com.google.api.client.json.gson.GsonFactory;
 import com.zabarzer.carpe.dto.LoginRequest;
 import com.zabarzer.carpe.dto.RegisterRequest;
+import com.zabarzer.carpe.dto.TokenResponse;
 import com.zabarzer.carpe.entity.User;
 import com.zabarzer.carpe.repos.UserRepository;
-import io.jsonwebtoken.Jwts;
-import io.jsonwebtoken.SignatureAlgorithm;
+import com.zabarzer.carpe.util.JwtUtil;
 import lombok.RequiredArgsConstructor;
+import org.apache.commons.lang3.RandomStringUtils;
 import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
-import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
+import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Service;
 
-import javax.crypto.spec.SecretKeySpec;
-import java.security.Key;
-import java.util.Base64;
-import java.util.Date;
-import java.util.Optional;
+import java.util.Collections;
 
 @Service
 @RequiredArgsConstructor
 public class AuthService {
 
+    private final JwtUtil jwtUtil;
     private final UserRepository userRepository;
-    private final BCryptPasswordEncoder passwordEncoder;
+    private final PasswordEncoder passwordEncoder;
+    private final NetHttpTransport transport = new NetHttpTransport();
+    private final GsonFactory jsonFactory = GsonFactory.getDefaultInstance();
+    @Value("${google.client.id}")
+    private String googleClientId;
 
-    @Value("${jwt.secret}")
-    private String jwtSecret;
+    // Google OAuth login
+    public TokenResponse handleGoogleLogin(String token) throws Exception {
+        GoogleIdTokenVerifier verifier = new GoogleIdTokenVerifier.Builder(transport, jsonFactory)
+                .setAudience(Collections.singletonList(googleClientId))
+                .build();
 
-    @Value("${jwt.expiration}")
-    private long jwtExpiration;
+        GoogleIdToken idToken = verifier.verify(token);
+        if (idToken != null) {
+            GoogleIdToken.Payload payload = idToken.getPayload();
+            String email = payload.getEmail();
+            String googleId = payload.getSubject();
 
-    public AuthResponse login(LoginRequest loginRequest) {
-        Optional<User> userOptional = userRepository.findByEmail(loginRequest.getEmail());
+            // Generate random password (8 characters)
+            String randomPassword = RandomStringUtils.randomAlphanumeric(8);
 
-        if (userOptional.isPresent()) {
-            User user = userOptional.get();
-            if (passwordEncoder.matches(loginRequest.getPassword(), user.getPassword())) {
-                String token = generateJwtToken(user);
+            // Check if the user exists, or create and save a new one
+            User user = userRepository.findByEmail(email)
+                    .orElseGet(() -> userRepository.save(
+                            User.builder()
+                                    .username(email)
+                                    .email(email)
+                                    .password(passwordEncoder.encode(randomPassword))
+                                    .googleId(googleId)
+                                    .build()
+                    ));
 
-                return new AuthResponse("Login successful!", HttpStatus.OK, user, token);
-            } else {
-                return new AuthResponse("Invalid credentials", HttpStatus.UNAUTHORIZED);
-            }
+            // Generate JWT
+            String jwt = jwtUtil.generateToken(user.getEmail());
+            return new TokenResponse(jwt);
         } else {
-            return new AuthResponse("User not found", HttpStatus.NOT_FOUND);
+            throw new Exception("Invalid Google ID token");
         }
     }
 
-    // Method to generate JWT token
-    private String generateJwtToken(User user) {
-        return Jwts.builder()
-                .setSubject(user.getEmail())
-                .setIssuedAt(new Date())
-                .setExpiration(new Date((new Date()).getTime() + jwtExpiration))
-                .signWith(getSigningKey(), SignatureAlgorithm.HS512) // Use the Key instance here
-                .compact();
-    }
+    // Username and password login
+    public TokenResponse loginWithUsernameAndPassword(LoginRequest request) {
+        User user = userRepository.findByEmail(request.getEmail())
+                .orElseThrow(() -> new RuntimeException("User not found"));
 
-    private Key getSigningKey() {
-        byte[] keyBytes = Base64.getDecoder().decode(jwtSecret);
-        return new SecretKeySpec(keyBytes, SignatureAlgorithm.HS512.getJcaName());
-    }
-
-    public AuthResponse register(RegisterRequest registerRequest) {
-        Optional<User> existingUser = userRepository.findByEmail(registerRequest.getEmail());
-
-        if (existingUser.isPresent()) {
-            return new AuthResponse("User already exists!", HttpStatus.CONFLICT);
+        if (!passwordEncoder.matches(request.getPassword(), user.getPassword())) {
+            throw new RuntimeException("Invalid credentials");
         }
 
-        User newUser = new User();
-        newUser.setEmail(registerRequest.getEmail());
-        newUser.setUsername(registerRequest.getUsername());
-        newUser.setPassword(passwordEncoder.encode(registerRequest.getPassword()));
-        User user = userRepository.save(newUser);
-        String token = generateJwtToken(user);
-        return new AuthResponse("User registered successfully!", HttpStatus.CREATED, newUser, token);
+        String jwt = jwtUtil.generateToken(user.getEmail());
+        return new TokenResponse(jwt);
     }
 
-    public AuthResponse googleLogin(GoogleLoginRequest googleLoginRequest) {
-        User user = userRepository.findByGoogleId(googleLoginRequest.getGoogleId())
-                .orElseGet(() -> {
-                    User newUser = new User();
-                    newUser.setGoogleId(googleLoginRequest.getGoogleId());
-                    newUser.setEmail(googleLoginRequest.getEmail());
-                    newUser.setUsername(googleLoginRequest.getUsername());
-                    return userRepository.save(newUser);
-                });
-        String token = generateJwtToken(user);
-        return new AuthResponse("Login successful!", HttpStatus.OK, user, token);
+    // User registration
+    public TokenResponse registerUser(RegisterRequest request) {
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("User already exists");
+        }
+
+        User user = new User(request.getUsername(), request.getEmail(), passwordEncoder.encode(request.getPassword()));
+        userRepository.save(user);
+
+        String jwt = jwtUtil.generateToken(user.getEmail());
+        return new TokenResponse(jwt);
     }
 }

@@ -80,8 +80,6 @@ jobs:
       - name: Rollout restart deployment
         run: |
           kubectl rollout restart deployment/carpe-be
-          kubectl scale deployment carpe-be --replicas=0
-          kubectl scale deployment carpe-be --replicas=2 
 
       # Optional: Verify that the deployment was successful
       - name: Check rollout status

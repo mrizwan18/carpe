@@ -9,5 +9,6 @@ import org.springframework.stereotype.Repository;
 @Repository
 public interface PoolRepository extends MongoRepository<Pool, String> {
     Page<Pool> findAll(Pageable pageable);
+    Page<Pool> findByTitleContainingIgnoreCase(String title, Pageable pageable);
 }
 

@@ -21,9 +21,10 @@ public class PoolController {
     @GetMapping("/all")
     public ResponseEntity<Page<Pool>> getAllPools(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size) {
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(required = false) String title) {
 
-        Page<Pool> pools = poolService.getAllPools(PageRequest.of(page, size));
+        Page<Pool> pools = poolService.getAllPools(title, PageRequest.of(page, size));
         return ResponseEntity.ok(pools);
     }
 }

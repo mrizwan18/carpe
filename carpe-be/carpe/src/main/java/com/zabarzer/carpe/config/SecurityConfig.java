@@ -33,6 +33,7 @@ public class SecurityConfig {
                 .cors(cors -> cors.configurationSource(corsConfigurationSource()))
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/auth/register", "/auth/login", "/auth/google-login").permitAll()
+                        .requestMatchers("/.well-known/acme-challenge/**").permitAll()
                         .anyRequest().authenticated()
                 )
                 .sessionManagement(session -> session

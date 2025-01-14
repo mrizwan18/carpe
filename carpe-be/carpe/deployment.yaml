@@ -1,24 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: carpe-be
+  name: carpe-deployment
 spec:
   replicas: 1
-  strategy:
-    type: RollingUpdate
-    rollingUpdate:
-      maxSurge: 25%
-      maxUnavailable: 25%
   selector:
     matchLabels:
-      app: carpe-be
+      app: carpe
   template:
     metadata:
       labels:
-        app: carpe-be
+        app: carpe
     spec:
       containers:
-        - name: carpe-be
-          image: gcr.io/carpe-438721/carpe:latest
+        - name: carpe
+          image: gcr.io/355217/carpe:v1
           ports:
             - containerPort: 8080

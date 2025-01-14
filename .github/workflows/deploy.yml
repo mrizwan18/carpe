@@ -49,16 +49,12 @@ jobs:
       # Build the Docker image
       - name: Build the Docker image
         run: |
-          IMAGE_TAG="gcr.io/${{ secrets.GCP_PROJECT_ID }}/carpe:latest"
-          COMMIT_SHA=$(git rev-parse --short HEAD)
-          docker build -t $IMAGE_TAG -f carpe-be/carpe/Dockerfile .
-          docker tag $IMAGE_TAG gcr.io/${{ secrets.GCP_PROJECT_ID }}/carpe:$COMMIT_SHA
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/carpe:latest -f carpe-be/carpe/Dockerfile .
 
       # Push the Docker image to Google Container Registry
       - name: Push Docker image to Google Container Registry
         run: |
           docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/carpe:latest
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/carpe:$COMMIT_SHA
 
       # Set up Google Kubernetes Engine (GKE)
       - name: Set up GKE

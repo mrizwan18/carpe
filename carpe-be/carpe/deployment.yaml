@@ -14,6 +14,6 @@ spec:
     spec:
       containers:
         - name: carpe
-          image: gcr.io/355217/carpe:v1
+          image: gcr.io/carpe-355217/carpe:v1
           ports:
             - containerPort: 8080

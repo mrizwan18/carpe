@@ -49,12 +49,12 @@ jobs:
       # Build the Docker image
       - name: Build the Docker image
         run: |
-          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/carpe:latest -f carpe-be/carpe/Dockerfile .
+          docker build -t gcr.io/${{ secrets.GCP_PROJECT_ID }}/carpe:v1 -f carpe-be/carpe/Dockerfile .
 
       # Push the Docker image to Google Container Registry
       - name: Push Docker image to Google Container Registry
         run: |
-          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/carpe:latest
+          docker push gcr.io/${{ secrets.GCP_PROJECT_ID }}/carpe:v1
 
       # Set up Google Kubernetes Engine (GKE)
       - name: Set up GKE
@@ -64,24 +64,23 @@ jobs:
           location: ${{ secrets.GKE_ZONE }}
           credentials_json: ${{ secrets.GCP_SA_KEY }}
 
-      # Update the image in the Kubernetes deployment
+      # Update the Kubernetes deployment with the new image
       - name: Update Kubernetes deployment with latest image
         run: |
-          kubectl set image deployment/carpe-be carpe-be=gcr.io/${{ secrets.GCP_PROJECT_ID }}/carpe:latest --record
-          kubectl set image deployment/carpe-be carpe-be=gcr.io/${{ secrets.GCP_PROJECT_ID }}/carpe:$COMMIT_SHA --record
-          kubectl set env deployment/carpe-be MONGODB_URI=${{ secrets.MONGODB_URI }}
-          kubectl set env deployment/carpe-be MONGODB_DATABASE=${{ secrets.MONGODB_DATABASE }}
-          kubectl set env deployment/carpe-be OAUTH_CLIENT_ID=${{ secrets.OAUTH_CLIENT_ID }}
-          kubectl set env deployment/carpe-be OAUTH_CLIENT_SECRET=${{ secrets.OAUTH_CLIENT_SECRET }}
-          kubectl set env deployment/carpe-be JWT_SECRET=${{ secrets.JWT_SECRET }}
-          kubectl set env deployment/carpe-be JWT_EXPIRY=${{ secrets.JWT_EXPIRY }}
+          kubectl set image deployment/carpe-deployment carpe=gcr.io/${{ secrets.GCP_PROJECT_ID }}/carpe:v1 --record
+          kubectl set env deployment/carpe-deployment MONGODB_URI=${{ secrets.MONGODB_URI }}
+          kubectl set env deployment/carpe-deployment MONGODB_DATABASE=${{ secrets.MONGODB_DATABASE }}
+          kubectl set env deployment/carpe-deployment OAUTH_CLIENT_ID=${{ secrets.OAUTH_CLIENT_ID }}
+          kubectl set env deployment/carpe-deployment OAUTH_CLIENT_SECRET=${{ secrets.OAUTH_CLIENT_SECRET }}
+          kubectl set env deployment/carpe-deployment JWT_SECRET=${{ secrets.JWT_SECRET }}
+          kubectl set env deployment/carpe-deployment JWT_EXPIRY=${{ secrets.JWT_EXPIRY }}
 
       # Rollout restart to ensure pods use the latest image
       - name: Rollout restart deployment
         run: |
-          kubectl rollout restart deployment/carpe-be
+          kubectl rollout restart deployment/carpe-deployment
 
       # Optional: Verify that the deployment was successful
       - name: Check rollout status
         run: |
-          kubectl rollout status deployment/carpe-be
+          kubectl rollout status deployment/carpe-deployment
